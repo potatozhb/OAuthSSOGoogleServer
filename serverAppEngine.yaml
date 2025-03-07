@@ -1,0 +1,7 @@
+runtime: nodejs22
+service: server
+env_variables:
+  GAE_DB_SOCKET: "/cloudsql/reactsso-451805:us-central1:ssowithoauth2"
+  GAE_DB_USER: test
+  GAE_DB_PASSWORD: test
+  GAE_DB_DATABASE: ssowithoauth2

@@ -2,10 +2,15 @@ const passport = require("passport");
 const strategy = require("passport-google-oauth20").Strategy;
 const User = require("./model/user");
 const {getAllUsers, getUser, addUser, updateUser} = require("./database/mysql")
+const dotenv = require("dotenv");
 
 const Client_ID = "571276805410-o1acfnkgfb0icmffki4ngt3pulnajkmo.apps.googleusercontent.com";
 const Secret = "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";
-const CallBackURL = "http://localhost:5000/api/auth/google/callback";
+var CallBackURL = "http://localhost:5000/api/auth/google/callback";
+
+if(process.env.NODE_ENV === "production"){
+    CallBackURL = `${process.env.API_ADDRESS}/api/auth/google/callback`;
+}
 
 var users = [];
 

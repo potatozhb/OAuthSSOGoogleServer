@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
+const dotenv = require("dotenv");
+dotenv.config();
 
 require("./passportGoogleSso");
 const passport = require("passport");
@@ -17,7 +19,28 @@ app.use(cookieSession({
 
 // Middleware to parse incoming request bodies
 app.use(bodyParser.json());  // For parsing application/json
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+
+const allowedOrigins = process.env.NODE_ENV === "production"
+  ? ["http://localhost:3000",process.env.APP_ADDRESS, process.env.CUSTOM_ADDRESS]
+  : ["http://localhost:3000", process.env.CUSTOM_ADDRESS];
+
+app.use(cors({
+  origin: function(origin, cb){
+    if(allowedOrigins.indexOf(origin) !== -1 || !origin){
+      cb(null, true);
+    }else{
+      cb(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
+
+// if(process.env.NODE_ENV === "production"){
+//   app.use(cors({ origin: process.env.APP_ADDRESS, credentials: true }));
+// }
+// else{
+//   app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+// }
 // app.use(express.json());
 
 app.use(passport.initialize());
